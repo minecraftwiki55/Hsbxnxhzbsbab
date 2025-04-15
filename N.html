@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>السحب على حزمة VIP</title>
+    <link rel="stylesheet" href="FlaxonStyle.css">
+    <style>
+        @keyframes blockAnimation {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fadeInRotate {
+            0% { transform: rotate(-5deg) scale(0.9); opacity: 0; }
+            100% { transform: rotate(0) scale(1); opacity: 1; }
+        }
+        
+        @keyframes glowing {
+            0% { box-shadow: 0 0 5px #55ff55; }
+            50% { box-shadow: 0 0 20px #55ff55; }
+            100% { box-shadow: 0 0 5px #55ff55; }
+        }
+        
+        .animate-block {
+            animation: blockAnimation 0.5s ease-out forwards;
+        }
+        
+        .animate-header {
+            animation: fadeInRotate 0.7s ease-out forwards;
+        }
+        
+        .glow-effect {
+            animation: glowing 2s infinite;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #55ff55;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #winners-section {
+            display: none;
+        }
+        
+        .winner-card {
+            animation: pulse 2s infinite;
+        }
+        
+        .mc-card:nth-child(1) { animation-delay: 0.1s; }
+        .mc-card:nth-child(2) { animation-delay: 0.3s; }
+        .mc-card:nth-child(3) { animation-delay: 0.5s; }
+        .mc-card:nth-child(4) { animation-delay: 0.7s; }
+        
+        .pixel-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pixel-effect:after {
+            content: '';
+            position: absolute;
+            top: -110%;
+            left: -210%;
+            width: 200%;
+            height: 200%;
+            opacity: 0;
+            transform: rotate(30deg);
+            background: rgba(255, 255, 255, 0.13);
+            background: linear-gradient(
+                to right, 
+                rgba(255, 255, 255, 0.13) 0%,
+                rgba(255, 255, 255, 0.13) 77%,
+                rgba(255, 255, 255, 0.5) 92%,
+                rgba(255, 255, 255, 0.0) 100%
+            );
+        }
+        
+        .pixel-effect:hover:after {
+            opacity: 1;
+            top: -30%;
+            left: -30%;
+            transition-property: left, top, opacity;
+            transition-duration: 0.7s, 0.7s, 0.15s;
+            transition-timing-function: ease;
+        }
+        
+        #countdown {
+            font-size: 28px;
+            text-align: center;
+            margin: 20px 0;
+            color: #55ff55;
+        }
+        
+        .participants-card {
+            margin: 20px 0;
+            text-align: center;
+            background-color: #1a1a1a;
+            border: 1px solid #55ff55;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .participants-count {
+            font-size: 20px;
+            color: #55ff55;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="mc-navbar">
+        <a href="#" class="mc-navbar-brand animate-header">🎮 سحب حزمة VIP 🎮</a>
+        <ul class="mc-navbar-items">
+            <li><a href="#home" class="active">الواجهة</a></li>
+            <li><a href="#about">عن المسابقة</a></li>
+            <li><a href="#rules">الشروط</a></li>
+            <li><a href="#contact">تواصل معنا</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="mc-card animate-block" style="animation-delay: 0.1s;">
+            <div class="mc-card-header">
+                <h2>🎁 سحب على حزمة VIP 🎁</h2>
+            </div>
+            <p>اهلا بك في مسابقة السحب على حزمة VIP المميزة! سجل الان للحصول على فرصتك للفوز!</p>
+            
+            <div id="countdown" class="glow-effect">
+                5 ايام : 00 ساعة : 00 دقيقة : 00 ثانية
+            </div>
+        </div>
+
+        <div class="mc-card animate-block participants-card" style="animation-delay: 0.2s;">
+            <div class="participants-count">
+                المشاركون: <span id="participants-number">0</span>
+            </div>
+        </div>
+
+        <div class="mc-card animate-block" style="animation-delay: 0.3s;">
+            <div class="mc-card-header">
+                <h3>سجل للمشاركة</h3>
+            </div>
+            <div class="mc-input-group">
+                <label for="telegram-username">اسم المستخدم في تلجرام (مع @)</label>
+                <input type="text" id="telegram-username" class="mc-input" placeholder="@username" required>
+            </div>
+            <div class="mc-input-group">
+                <label for="telegram-name">الاسم في تلجرام</label>
+                <input type="text" id="telegram-name" class="mc-input" placeholder="الاسم الظاهر في تلجرام" required>
+            </div>
+            <button id="register-btn" class="mc-button pixel-effect">تسجيل المشاركة</button>
+        </div>
+
+        <div id="winners-section" class="animate-block" style="animation-delay: 0.5s;">
+            <div class="mc-card winner-card">
+                <div class="mc-card-header">
+                    <h3>🏆 الرابحين بالمسابقة 🏆</h3>
+                </div>
+                <div id="winners-list" class="mc-table">
+                    <table class="mc-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم المستخدم</th>
+                                <th>الاسم</th>
+                            </tr>
+                        </thead>
+                        <tbody id="winners-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mc-card animate-block" style="animation-delay: 0.5s;" id="about">
+            <div class="mc-card-header">
+                <h3>عن المسابقة</h3>
+            </div>
+            <p>سحب حزمة VIP هي مسابقة تتيح لك فرصة للفوز بمميزات حصرية ومكافات قيمة!</p>
+            <p>سيتم اختيار 3 رابحين بشكل ملخبط :) بعد 5 ايام من بدء المسابقة.</p>
+            <div class="mc-alert mc-alert-info">
+                <strong>ملاحظة:</strong> يجب ان تكون مشتركا في قناتنا على تلجرام للتاهل للفوز.
+            </div>
+        </div>
+
+        <div class="mc-card animate-block" style="animation-delay: 0.7s;" id="rules">
+            <div class="mc-card-header">
+                <h3>شروط المشاركة</h3>
+            </div>
+            <ul>
+                <li>يجب ان يكون عمر حسابك في تلجرام اكثر من شهر</li>
+                <li>يجب ان تكون مشتركا في قناتنا الرسمية</li>
+                <li>مسموح بمشاركة واحدة فقط لكل شخص</li>
+                <li>سيتم الاعلان عن الرابحين بعد 5 ايام من بدء المسابقة</li>
+                <li>سيتم اختيار 3 رابحين بشكل ملخبط :) من جميع المشاركين</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mc-footer" id="contact">
+        <div class="mc-footer-content">
+            <div class="mc-footer-links">
+                <a href="#home">الواجهة</a>
+                <a href="#">سياسة الخصوصية</a>
+                <a href="">تواصل معنا</a>
+            </div>
+            <div class="mc-footer-copyright">
+                جميع الحقوق محفوظة © 2025 - سحب حزمة VIP
+            </div>
+        </div>
+    </div>
+
+    <div class="mc-toaster" id="toaster"></div>
+
+    <div class="mc-modal" id="success-modal">
+        <div class="mc-modal-content">
+            <div class="mc-modal-header">
+                <span>تم التسجيل بنجاح</span>
+                <span class="mc-modal-close" id="close-modal">&times;</span>
+            </div>
+            <div class="mc-modal-body">
+                <p>تم تسجيل مشاركتك بنجاح في سحب حزمة VIP!</p>
+                <p>يرجى التاكد من اشتراكك في قناتنا على تلجرام للتاهل للسحب.</p>
+                <p>سيتم الاعلان عن الرابحين بعد 5 ايام من الان.</p>
+            </div>
+            <div class="mc-modal-footer">
+                <button class="mc-button" id="ok-btn">حسنا</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const firebaseConfig = {
+  apiKey: "AIzaSyAIFAzOsnNyyUso3aJcaoufS6w8I5tHVfM",
+  authDomain: "mc-vip.firebaseapp.com",
+  projectId: "mc-vip",
+  storageBucket: "mc-vip.firebasestorage.app",
+  messagingSenderId: "912805743594",
+  appId: "1:912805743594:web:e0f8e9bb62e40b43bb0093",
+  measurementId: "G-V7V395JD0Z"
+};
+            
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+            const participantsRef = database.ref('participants');
+            
+            let participants = [];
+            
+            participantsRef.on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    participants = Object.values(snapshot.val());
+                    document.getElementById('participants-number').textContent = participants.length;
+                }
+            });
+            
+            const registerBtn = document.getElementById('register-btn');
+            const telegramUsername = document.getElementById('telegram-username');
+            const telegramName = document.getElementById('telegram-name');
+            const successModal = document.getElementById('success-modal');
+            const closeModal = document.getElementById('close-modal');
+            const okBtn = document.getElementById('ok-btn');
+            const toaster = document.getElementById('toaster');
+            
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `mc-toast ${type}`;
+                toast.innerHTML = `
+                    <span>${message}</span>
+                    <span class="mc-toast-close">&times;</span>
+                `;
+                toaster.appendChild(toast);
+                
+                const closeBtn = toast.querySelector('.mc-toast-close');
+                closeBtn.addEventListener('click', () => {
+                    toast.remove();
+                });
+                
+                setTimeout(() => {
+                    toast.remove();
+                }, 5000);
+            }
+            
+            function validateForm() {
+                if (!telegramUsername.value.trim()) {
+                    showToast('يرجى ادخال اسم المستخدم في تلجرام', 'error');
+                    return false;
+                }
+                
+                if (!telegramName.value.trim()) {
+                    showToast('يرجى ادخال الاسم في تلجرام', 'error');
+                    return false;
+                }
+                
+                const username = telegramUsername.value.trim();
+                if (!username.startsWith('@')) {
+                    showToast('يجب ان يبدا اسم المستخدم بـ @', 'error');
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            registerBtn.addEventListener('click', () => {
+                if (!validateForm()) return;
+                
+                const username = telegramUsername.value.trim();
+                const name = telegramName.value.trim();
+                
+                const exists = participants.some(p => p.username === username);
+                if (exists) {
+                    showToast('لقد قمت بالتسجيل مسبقا', 'warning');
+                    return;
+                }
+                
+                const participant = {
+                    username: username,
+                    name: name,
+                    timestamp: Date.now()
+                };
+                
+                participantsRef.push(participant)
+                    .then(() => {
+                        showConfetti();
+                        successModal.classList.add('active');
+                        telegramUsername.value = '';
+                        telegramName.value = '';
+                    })
+                    .catch(error => {
+                        showToast('حدث خطا اثناء التسجيل. يرجى المحاولة مرة اخرى.', 'error');
+                        console.error(error);
+                    });
+            });
+            
+            closeModal.addEventListener('click', () => {
+                successModal.classList.remove('active');
+            });
+            
+            okBtn.addEventListener('click', () => {
+                successModal.classList.remove('active');
+            });
+            
+            function showConfetti() {
+                const confettiCount = 150;
+                const container = document.body;
+                
+                for (let i = 0; i < confettiCount; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = -10 + 'px';
+                    confetti.style.backgroundColor = getRandomColor();
+                    confetti.style.width = Math.random() * 10 + 5 + 'px';
+                    confetti.style.height = Math.random() * 10 + 5 + 'px';
+                    confetti.style.opacity = Math.random();
+                    confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                    
+                    container.appendChild(confetti);
+                    
+                    animateConfetti(confetti);
+                }
+            }
+            
+            function animateConfetti(confetti) {
+                const duration = Math.random() * 3 + 2;
+                const xMovement = Math.random() * 30 - 15;
+                
+                confetti.style.animation = `fall ${duration}s linear forwards`;
+                confetti.style.transform = `translate(${xMovement}px, 100vh) rotate(${Math.random() * 360}deg)`;
+                
+                confetti.style.animationDuration = duration + 's';
+                confetti.style.opacity = 1;
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, duration * 1000);
+            }
+            
+            function getRandomColor() {
+                const colors = ['#55ff55', '#5555ff', '#ff5555', '#ffff55', '#55ffff', '#ff55ff'];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            function startCountdown() {
+                const countdownElement = document.getElementById('countdown');
+                const endDate = new Date();
+                endDate.setDate(endDate.getDate() + 5);
+                
+                function updateCountdown() {
+                    const now = new Date().getTime();
+                    const distance = endDate - now;
+                    
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    countdownElement.innerHTML = `${days} ايام : ${hours} ساعة : ${minutes} دقيقة : ${seconds} ثانية`;
+                    
+                    if (distance < 0) {
+                        clearInterval(x);
+                        countdownElement.innerHTML = "انتهى الوقت - جاري اختيار الرابحين!";
+                        selectWinners();
+                    }
+                }
+                
+                updateCountdown();
+                const x = setInterval(updateCountdown, 1000);
+            }
+            
+            function selectWinners() {
+                const winnersSection = document.getElementById('winners-section');
+                const winnersTbody = document.getElementById('winners-tbody');
+                
+                if (participants.length === 0) {
+                    showToast('لا يوجد مشاركين للسحب', 'warning');
+                    return;
+                }
+                
+                const shuffled = [...participants].sort(() => 0.5 - Math.random());
+                const winners = shuffled.slice(0, Math.min(3, shuffled.length));
+                
+                winnersTbody.innerHTML = '';
+                winners.forEach((winner, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${winner.username}</td>
+                        <td>${winner.name}</td>
+                    `;
+                    winnersTbody.appendChild(row);
+                });
+                
+                winnersSection.style.display = 'block';
+                showToast('تم اختيار الرابحين بنجاح!', 'success');
+                
+                database.ref('winners').set(winners)
+                    .then(() => {
+                        console.log('Winners saved successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error saving winners:', error);
+                    });
+            }
+            
+            function loadWinners() {
+                const winnersTbody = document.getElementById('winners-tbody');
+                const winnersSection = document.getElementById('winners-section');
+                
+                database.ref('winners').once('value')
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const winners = snapshot.val();
+                            
+                            winnersTbody.innerHTML = '';
+                            winners.forEach((winner, index) => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${index + 1}</td>
+                                    <td>${winner.username}</td>
+                                    <td>${winner.name}</td>
+                                `;
+                                winnersTbody.appendChild(row);
+                            });
+                            
+                            winnersSection.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading winners:', error);
+                    });
+            }
+            
+            startCountdown();
+            loadWinners();
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            document.querySelector('body').insertAdjacentHTML('beforeend', `
+                <style>
+                    @keyframes fall {
+                        0% {
+                            transform: translateY(0) rotate(0deg);
+                            opacity: 1;
+                        }
+                        100% {
+                            transform: translateY(100vh) rotate(360deg);
+                            opacity: 0;
+                        }
+                    }
+                </style>
+            `);
+        });
+    </script>
+</body>
+</html>
